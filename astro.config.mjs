@@ -23,5 +23,8 @@ export default defineConfig({
   build: {
     // CSS en linea: sin peticion extra bloqueante -> mejor LCP.
     inlineStylesheets: "always",
+    // Archivos planos (apps.html) en vez de carpetas: Netlify sirve la URL
+    // limpia con 200, sin el 301 a la barra final que rompia el canonical.
+    format: "file",
   },
 });
