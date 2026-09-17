@@ -1,0 +1,244 @@
+---
+import Base from "../layouts/Base.astro";
+import { SITE, COPY } from "../data/site";
+import { APPS } from "../data/apps";
+
+const title = "Sobre ProcessAI Studio — product studio independiente";
+const description =
+  "ProcessAI Studio es un estudio de producto independiente que crea, lanza y hace crecer sus propias aplicaciones de internet. Así trabajamos.";
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: title,
+    url: `${SITE.domain}/about`,
+    description,
+    mainEntity: { "@id": `${SITE.domain}/#organization` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: `${SITE.domain}/` },
+      { "@type": "ListItem", position: 2, name: "Estudio", item: `${SITE.domain}/about` },
+    ],
+  },
+];
+---
+
+<Base title={`${title} | ProcessAI Studio`} description={description} path="/about" schema={schema}>
+  <section class="section">
+    <div class="container narrow">
+      <nav class="crumb" aria-label="Migas de pan">
+        <a href="/">Inicio</a> <span aria-hidden="true">/</span> <span>Estudio</span>
+      </nav>
+
+      <h1>{COPY.about.lead}</h1>
+      <p class="lead">{COPY.about.body}</p>
+
+      <h2>Cómo trabajamos</h2>
+      <ol class="loop">
+        {
+          COPY.about.loop.map((step, i) => (
+            <li>
+              <span class="n">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <strong>{step}</strong>
+                <span>
+                  {
+                    [
+                      "Empezamos por un problema concreto y lo resolvemos con el producto más pequeño que funcione.",
+                      "Publicamos pronto y en abierto: si nadie puede usarlo, no hemos aprendido nada.",
+                      "Miramos cómo se usa de verdad, no cómo imaginábamos que se usaría.",
+                      "Arreglamos lo que estorba y afilamos lo que funciona.",
+                      "Y volvemos a empezar con el siguiente producto.",
+                    ][i]
+                  }
+                </span>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <h2>En qué creemos</h2>
+      <ul class="beliefs">
+        <li>
+          <strong>Productos pequeños que se entienden en un minuto.</strong> Si hace falta un manual,
+          está mal diseñado.
+        </li>
+        <li>
+          <strong>Gratis para empezar, siempre.</strong> Queremos que pruebes el producto antes de
+          pagar nada.
+        </li>
+        <li>
+          <strong>Los datos son de quien los genera.</strong> Procesamos en el dispositivo siempre
+          que se pueda y pedimos el mínimo permiso necesario.
+        </li>
+        <li>
+          <strong>Rápido por defecto.</strong> La velocidad es parte del diseño, no una optimización
+          posterior.
+        </li>
+      </ul>
+
+      <h2>Quiénes somos</h2>
+      <p>
+        Somos {SITE.founders}. Diseñamos, programamos y mantenemos cada producto nosotros mismos
+        desde España. No hacemos proyectos para terceros: todo lo que ves en esta web es nuestro y lo
+        seguimos manteniendo.
+      </p>
+
+      <div class="apps-line">
+        <h2>Lo que hemos publicado</h2>
+        <ul>
+          {
+            APPS.map((a) => (
+              <li>
+                <a href={`/apps/${a.slug}`}>
+                  <span class="m" style={`--accent:${a.accent}`}>{a.mark}</span>
+                  <strong>{a.name}</strong>
+                  <span class="d">{a.tagline}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="contact">
+        <h2>Hablemos</h2>
+        <p>
+          ¿Una idea, un fallo o simplemente curiosidad? Escríbenos a
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .narrow {
+    max-width: 760px;
+  }
+  .crumb {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-bottom: 26px;
+  }
+  .crumb a:hover {
+    color: var(--text-2);
+  }
+  .crumb span[aria-hidden] {
+    margin: 0 4px;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 46px);
+  }
+  .lead {
+    font-size: clamp(17px, 2.3vw, 19px);
+    color: var(--text-2);
+    margin-top: 18px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: 52px;
+    margin-bottom: 16px;
+  }
+  p {
+    color: var(--text-2);
+  }
+
+  .loop {
+    list-style: none;
+  }
+  .loop li {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .loop li:last-child {
+    border-bottom: 0;
+  }
+  .loop .n {
+    font-size: 12px;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+    padding-top: 3px;
+  }
+  .loop strong {
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .loop span:not(.n) {
+    color: var(--text-2);
+    font-size: 14.5px;
+  }
+
+  .beliefs {
+    list-style: none;
+    display: grid;
+    gap: 12px;
+  }
+  .beliefs li {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .beliefs strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .apps-line ul {
+    list-style: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .apps-line li + li {
+    border-top: 1px solid var(--border);
+  }
+  .apps-line a {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px 17px;
+    transition: background var(--t);
+  }
+  .apps-line a:hover {
+    background: var(--surface);
+  }
+  .apps-line .m {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+  .apps-line .d {
+    color: var(--text-3);
+    font-size: 14px;
+  }
+
+  .contact a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 620px) {
+    .apps-line .d {
+      display: none;
+    }
+  }
+</style>

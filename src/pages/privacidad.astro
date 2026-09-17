@@ -1,0 +1,88 @@
+---
+import Base from "../layouts/Base.astro";
+import { SITE } from "../data/site";
+import { APPS } from "../data/apps";
+
+const title = "Política de privacidad";
+const description =
+  "Qué datos trata processai.studio: prácticamente ninguno. Analítica agregada sin cookies y sin perfilado.";
+---
+
+<Base title={`${title} | ProcessAI Studio`} description={description} path="/privacidad">
+  <section class="section">
+    <div class="container narrow">
+      <h1>{title}</h1>
+      <p class="upd">Última actualización: septiembre de 2026</p>
+
+      <h2>Responsable</h2>
+      <p>
+        ProcessAI Studio ({SITE.founders}), España. Contacto:
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+
+      <h2>Qué datos recogemos en esta web</h2>
+      <p>
+        Esta web es un catálogo de productos: <strong>no tiene formularios, ni registro, ni
+        carrito</strong>. No te pedimos ningún dato personal para navegar por ella.
+      </p>
+
+      <h2>Analítica</h2>
+      <p>
+        Para saber qué apps interesan más, medimos visitas y clics de forma <strong>agregada y
+        anónima</strong>: página visitada, app abierta, tipo de dispositivo, país aproximado y de
+        dónde vienes. No usamos cookies de seguimiento, no creamos perfiles y no podemos
+        identificarte personalmente. Por eso esta web no necesita banner de cookies.
+      </p>
+
+      <h2>Enlaces a nuestras aplicaciones</h2>
+      <p>
+        Desde aquí enlazamos a nuestras apps ({APPS.map((a) => a.name).join(", ")}). Cada una es un
+        producto independiente con su propia política de privacidad, que se aplica en cuanto sales de
+        esta web. Si una app procesa tus datos, lo explica en su propio sitio.
+      </p>
+
+      <h2>Tus derechos</h2>
+      <p>
+        Como no almacenamos datos personales de tu visita, no hay nada que rectificar ni suprimir.
+        Aun así, puedes escribirnos a <a href={`mailto:${SITE.email}`}>{SITE.email}</a> para
+        cualquier duda sobre privacidad y te responderemos.
+      </p>
+
+      <h2>Cambios</h2>
+      <p>
+        Si en el futuro añadimos formularios o funciones que traten datos, actualizaremos esta página
+        antes de hacerlo.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .narrow {
+    max-width: 720px;
+  }
+  h1 {
+    font-size: clamp(28px, 4.6vw, 40px);
+  }
+  .upd {
+    color: var(--text-3);
+    font-size: 13.5px;
+    margin-top: 10px;
+  }
+  h2 {
+    font-size: 18px;
+    margin-top: 40px;
+    margin-bottom: 10px;
+  }
+  p {
+    color: var(--text-2);
+  }
+  strong {
+    color: var(--text);
+  }
+  a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

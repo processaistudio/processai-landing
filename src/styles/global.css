@@ -1,0 +1,448 @@
+/* ═══════════════════════════════════════════════════════════════
+   ProcessAI Studio — sistema de diseño
+   Idea: el estudio es monocromo; el color lo pone cada producto
+   (cada tarjeta recibe su --accent desde src/data/apps.ts).
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #08090c;
+  --bg-soft: #0b0d12;
+  --surface: rgba(255, 255, 255, 0.028);
+  --surface-2: rgba(255, 255, 255, 0.055);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.17);
+  --text: #f3f4f8;
+  --text-2: #a5aabb;
+  --text-3: #707486;
+  --accent: #ffffff;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --max: 1120px;
+  --t: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Rejilla muy sutil: textura de "estudio técnico" sin coste de render */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(90% 60% at 50% 0%, #000 10%, transparent 75%);
+  -webkit-mask-image: radial-gradient(90% 60% at 50% 0%, #000 10%, transparent 75%);
+  pointer-events: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+::selection {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ── Utilidades ───────────────────────────────────────────── */
+
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 6px 13px;
+  border-radius: 999px;
+}
+
+.eyebrow .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2fd38a;
+  box-shadow: 0 0 0 3px rgba(47, 211, 138, 0.15);
+}
+
+.section {
+  padding: 88px 0;
+}
+.section-sm {
+  padding: 56px 0;
+}
+
+.shead {
+  margin-bottom: 36px;
+}
+.shead h2 {
+  font-size: clamp(26px, 4vw, 38px);
+}
+.shead p {
+  color: var(--text-2);
+  margin-top: 10px;
+  font-size: 16px;
+  max-width: 56ch;
+}
+.shead-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hr {
+  height: 1px;
+  background: var(--border);
+  border: 0;
+}
+
+/* ── Botones ──────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 11px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--t), border-color var(--t), transform var(--t);
+  white-space: nowrap;
+}
+.btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: #fff;
+  color: #08090c;
+  border-color: #fff;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background: #e9eaee;
+  border-color: #e9eaee;
+}
+
+.btn-lg {
+  padding: 14px 24px;
+  font-size: 16px;
+}
+.btn-block {
+  width: 100%;
+}
+
+/* ── Tarjeta de app ───────────────────────────────────────── */
+
+.app-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.app-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  overflow: hidden;
+  transition: border-color var(--t), transform var(--t), background var(--t);
+}
+
+/* El acento del producto solo aparece al pasar por encima */
+.app-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--accent) 55%, transparent),
+    transparent 55%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--t);
+  pointer-events: none;
+}
+
+.app-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.045);
+}
+.app-card:hover::after {
+  opacity: 1;
+}
+
+.app-card .glow {
+  position: absolute;
+  top: -70px;
+  right: -50px;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: var(--accent);
+  filter: blur(70px);
+  opacity: 0.1;
+  transition: opacity var(--t);
+  pointer-events: none;
+}
+.app-card:hover .glow {
+  opacity: 0.22;
+}
+
+.app-top {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  position: relative;
+}
+
+.app-mark {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  color: var(--text);
+}
+.app-mark img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+/* El bloque de identidad ocupa el ancho restante: así el nombre
+   nunca parte en dos líneas por culpa de las insignias. */
+.app-id {
+  min-width: 0;
+  flex: 1;
+}
+
+.app-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.app-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.app-cats {
+  font-size: 12.5px;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-desc {
+  color: var(--text-2);
+  font-size: 15px;
+  margin-top: 16px;
+  position: relative;
+  flex: 1;
+}
+
+.app-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+  position: relative;
+}
+.app-facts span {
+  font-size: 12px;
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 4px 9px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.app-actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 22px;
+  position: relative;
+}
+.app-actions .btn {
+  flex: 1;
+  font-size: 14.5px;
+  padding: 11px 16px;
+}
+
+/* ── Insignias ────────────────────────────────────────────── */
+
+.badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+.badge-new {
+  color: #0a0b0e;
+  background: #eef0f5;
+  border-color: #eef0f5;
+}
+.badge-live {
+  color: #48e3a4;
+  background: rgba(47, 211, 138, 0.12);
+  border-color: rgba(47, 211, 138, 0.26);
+}
+.badge-beta {
+  color: #f0c04a;
+  background: rgba(240, 192, 74, 0.12);
+  border-color: rgba(240, 192, 74, 0.26);
+}
+.badge-soon {
+  color: var(--text-3);
+}
+
+/* ── Animación de entrada (respeta reduce-motion) ─────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Móvil ────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .section {
+    padding: 60px 0;
+  }
+  .container {
+    padding: 0 18px;
+  }
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+  .app-card {
+    padding: 20px;
+  }
+}

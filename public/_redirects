@@ -1,0 +1,30 @@
+# ProcessAI Studio dejo de ser agencia (2026). Las paginas de
+# servicios/blog se retiran con 301 para no dejar 404s y no
+# perder la autoridad del dominio.
+
+/servicios                         /  301
+/precios                           /  301
+/analisis-gratuito                 /  301
+/brief-web                         /  301
+
+/automatizacion-ia                 /  301
+/automatizacion-whatsapp           /  301
+/automatizacion-crm                /  301
+/automatizacion-empresas           /  301
+/desarrollo-web                    /  301
+/chatbots-ia                       /  301
+/consultoria-ia                    /  301
+
+/automatizacion-ia-barcelona       /  301
+/automatizacion-ia-girona          /  301
+/automatizacion-ia-madrid          /  301
+/automatizacion-ia-valencia        /  301
+/desarrollo-web-barcelona          /  301
+/desarrollo-web-girona             /  301
+/automatizacion-whatsapp-barcelona /  301
+/automatizacion-crm-barcelona      /  301
+
+/blog                              /  301
+/blog/*                            /  301
+
+/index.html                        /  301

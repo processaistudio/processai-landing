@@ -1,0 +1,126 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE } from "../data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Ruta canónica, ej. "/apps/chatflash". Por defecto, la actual. */
+  path?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  /** Objetos JSON-LD (schema.org) de esta página. */
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  path = Astro.url.pathname,
+  ogImage = SITE.ogImage,
+  ogType = "website",
+  schema = [],
+  noindex = false,
+} = Astro.props;
+
+const clean = path === "/" ? "/" : path.replace(/\/+$/, "");
+const canonical = new URL(clean, SITE.domain).href;
+const ogImageUrl = new URL(ogImage, SITE.domain).href;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {!noindex && <meta name="robots" content="index, follow, max-image-preview:large" />}
+    <meta name="theme-color" content="#08090c" />
+    <meta name="author" content={SITE.name} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    {
+      schema.map((s) => (
+        <script type="application/ld+json" set:html={JSON.stringify(s)} />
+      ))
+    }
+
+    <!--
+      ANALYTICS — descomenta UNA línea cuando tengas cuenta.
+      Recomendado: Plausible (ligero, sin cookies, sin banner RGPD).
+      <script defer data-domain="processai.studio" src="https://plausible.io/js/script.js"></script>
+      Alternativa Google Analytics 4:
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+      <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXX');</script>
+    -->
+    <script is:inline>
+      // Capa de eventos: funciona con Plausible, GA4 o GTM, el que esté puesto.
+      window.paiTrack = function (name, props) {
+        try {
+          if (window.plausible) window.plausible(name, { props: props || {} });
+          if (typeof window.gtag === "function") window.gtag("event", name, props || {});
+          else if (window.dataLayer)
+            window.dataLayer.push(Object.assign({ event: name }, props || {}));
+        } catch (e) {}
+      };
+      // Cualquier elemento con data-track dispara su evento (ej. app_open).
+      document.addEventListener(
+        "click",
+        function (e) {
+          var t = e.target;
+          var el = t && t.closest ? t.closest("[data-track]") : null;
+          if (!el) return;
+          window.paiTrack(el.getAttribute("data-track"), {
+            app: el.getAttribute("data-app") || "",
+            place: el.getAttribute("data-place") || "",
+          });
+        },
+        { capture: true, passive: true },
+      );
+    </script>
+  </head>
+
+  <body>
+    <a
+      href="#main"
+      style="position:absolute;left:-9999px;top:0;background:#fff;color:#000;padding:10px 16px;border-radius:0 0 8px 0;z-index:100"
+      onfocus="this.style.left='0'"
+      onblur="this.style.left='-9999px'">Saltar al contenido</a
+    >
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

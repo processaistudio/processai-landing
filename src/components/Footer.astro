@@ -1,0 +1,133 @@
+---
+import { SITE, COPY } from "../data/site";
+import { APPS } from "../data/apps";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid">
+      <div class="col brand-col">
+        <div class="fbrand">
+          <span class="fmark" aria-hidden="true"></span>
+          ProcessAI Studio
+        </div>
+        <p>{COPY.footer.tagline}</p>
+      </div>
+
+      <div class="col">
+        <h2>Estudio</h2>
+        <a href="/apps">Todas las apps</a>
+        <a href="/about">Sobre nosotros</a>
+        <a href={`mailto:${SITE.email}`}>Contacto</a>
+      </div>
+
+      <div class="col">
+        <h2>Productos</h2>
+        {
+          APPS.map((app) => (
+            <a
+              href={app.url}
+              target="_blank"
+              rel="noopener"
+              data-track="app_open"
+              data-app={app.slug}
+              data-place="footer"
+            >
+              {app.name} ↗
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="col">
+        <h2>Legal</h2>
+        <a href="/privacidad">Privacidad</a>
+        <a href="/terminos">Términos</a>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <span>© {year} {SITE.name}</span>
+      <span>{SITE.founders} · España</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 52px 0 32px;
+    margin-top: 40px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.6fr repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .col h2 {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 13px;
+  }
+  .col a {
+    display: block;
+    font-size: 14.5px;
+    color: var(--text-2);
+    margin-bottom: 9px;
+    transition: color var(--t);
+    width: fit-content;
+  }
+  .col a:hover {
+    color: var(--text);
+  }
+
+  .fbrand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .fmark {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    background: linear-gradient(145deg, #fff, #9a9db0);
+  }
+  .brand-col p {
+    color: var(--text-3);
+    font-size: 14.5px;
+    margin-top: 10px;
+    max-width: 30ch;
+  }
+
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 44px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    .brand-col {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

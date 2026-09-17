@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://processai.studio/sitemap-index.xml

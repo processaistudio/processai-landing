@@ -1,0 +1,60 @@
+---
+import type { App } from "../data/apps";
+import { STATUS_LABEL } from "../data/apps";
+
+interface Props {
+  app: App;
+  place?: string;
+}
+
+const { app, place = "grid" } = Astro.props;
+const statusClass = `badge badge-${app.status}`;
+---
+
+<article class="app-card" style={`--accent:${app.accent}`} data-categories={app.categories.join(",")}>
+  <div class="glow" aria-hidden="true"></div>
+
+  <div class="app-top">
+    <div class="app-mark">
+      {
+        app.logo ? (
+          <img src={app.logo} alt={`Logo de ${app.name}`} width="46" height="46" loading="lazy" />
+        ) : (
+          <span aria-hidden="true">{app.mark}</span>
+        )
+      }
+    </div>
+    <div class="app-id">
+      <h3 class="app-name">
+        {app.name}
+        {app.isNew && <span class="badge badge-new">Nuevo</span>}
+      </h3>
+      <div class="app-meta">
+        <span class="app-cats">{app.categories.join(" · ")}</span>
+        <span class={statusClass}>{STATUS_LABEL[app.status]}</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="app-desc">{app.description}</p>
+
+  <div class="app-facts">
+    {app.facts.map((f) => <span>{f}</span>)}
+  </div>
+
+  <div class="app-actions">
+    <a class="btn btn-primary" href={`/apps/${app.slug}`}>Ver ficha</a>
+    <a
+      class="btn"
+      href={app.url}
+      target="_blank"
+      rel="noopener"
+      data-track="app_open"
+      data-app={app.slug}
+      data-place={place}
+      aria-label={`Abrir ${app.name} en una pestaña nueva`}
+    >
+      Abrir ↗
+    </a>
+  </div>
+</article>

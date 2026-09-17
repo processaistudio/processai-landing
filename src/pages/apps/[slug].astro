@@ -1,0 +1,552 @@
+---
+import Base from "../../layouts/Base.astro";
+import AppCard from "../../components/AppCard.astro";
+import { SITE } from "../../data/site";
+import { APPS, STATUS_LABEL, type App } from "../../data/apps";
+
+export function getStaticPaths() {
+  return APPS.map((app) => ({ params: { slug: app.slug }, props: { app } }));
+}
+
+interface Props {
+  app: App;
+}
+
+const { app } = Astro.props;
+const url = `${SITE.domain}/apps/${app.slug}`;
+const others = APPS.filter((a) => a.slug !== app.slug);
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: app.name,
+    url,
+    sameAs: app.url,
+    description: app.seoDescription,
+    applicationCategory: "WebApplication",
+    operatingSystem: "Web",
+    inLanguage: "es-ES",
+    publisher: {
+      "@type": "Organization",
+      "@id": `${SITE.domain}/#organization`,
+      name: SITE.name,
+      url: `${SITE.domain}/`,
+    },
+    author: {
+      "@type": "Organization",
+      "@id": `${SITE.domain}/#organization`,
+    },
+    featureList: app.features.map((f) => f.title),
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "EUR",
+      description: app.price,
+      availability: "https://schema.org/InStock",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: app.faq.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: `${SITE.domain}/` },
+      { "@type": "ListItem", position: 2, name: "Apps", item: `${SITE.domain}/apps` },
+      { "@type": "ListItem", position: 3, name: app.name, item: url },
+    ],
+  },
+];
+---
+
+<Base
+  title={`${app.seoTitle} | ProcessAI Studio`}
+  description={app.seoDescription}
+  path={`/apps/${app.slug}`}
+  schema={schema}
+  ogImage={app.image ?? SITE.ogImage}
+>
+  <article style={`--accent:${app.accent}`}>
+    <section class="head">
+      <div class="head-glow" aria-hidden="true"></div>
+      <div class="container">
+        <nav class="crumb" aria-label="Migas de pan">
+          <a href="/">Inicio</a> <span aria-hidden="true">/</span>
+          <a href="/apps">Apps</a> <span aria-hidden="true">/</span>
+          <span>{app.name}</span>
+        </nav>
+
+        <div class="head-grid">
+          <div>
+            <div class="idrow">
+              <div class="app-mark big">
+                {
+                  app.logo ? (
+                    <img src={app.logo} alt={`Logo de ${app.name}`} width="64" height="64" />
+                  ) : (
+                    <span aria-hidden="true">{app.mark}</span>
+                  )
+                }
+              </div>
+              <div class="badges">
+                <span class={`badge badge-${app.status}`}>{STATUS_LABEL[app.status]}</span>
+                {app.isNew && <span class="badge badge-new">Nuevo</span>}
+              </div>
+            </div>
+
+            <h1>{app.name}</h1>
+            <p class="tagline">{app.tagline}</p>
+            <p class="lead">{app.longDescription}</p>
+
+            <div class="cta">
+              <a
+                class="btn btn-primary btn-lg"
+                href={app.url}
+                target="_blank"
+                rel="noopener"
+                data-track="app_open"
+                data-app={app.slug}
+                data-place="ficha-hero"
+              >
+                Abrir {app.name} ↗
+              </a>
+              <a class="btn btn-lg" href="#funciones">Ver qué hace</a>
+            </div>
+
+            <dl class="meta">
+              <div><dt>Precio</dt><dd>{app.price}</dd></div>
+              <div><dt>Plataforma</dt><dd>{app.platform}</dd></div>
+              <div><dt>Categorías</dt><dd>{app.categories.join(" · ")}</dd></div>
+            </dl>
+          </div>
+
+          <aside class="preview" aria-label={`Vista previa de ${app.name}`}>
+            {
+              app.image ? (
+                <img src={app.image} alt={`Captura de ${app.name}`} width="520" height="360" />
+              ) : (
+                <div class="preview-card">
+                  <div class="pv-bar" aria-hidden="true">
+                    <i></i><i></i><i></i>
+                    <span>{new URL(app.url).hostname}</span>
+                  </div>
+                  <div class="pv-body">
+                    <span class="pv-mark" aria-hidden="true">{app.mark}</span>
+                    <p class="pv-tag">{app.tagline}</p>
+                    <ul class="pv-facts">
+                      {app.facts.map((f) => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              )
+            }
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-sm">
+      <div class="container narrow">
+        <h2 class="h-sm">El problema</h2>
+        <p class="para">{app.problem}</p>
+      </div>
+    </section>
+
+    <section class="section" id="funciones">
+      <div class="container">
+        <div class="shead">
+          <h2>Qué hace {app.name}</h2>
+        </div>
+        <div class="feat-grid">
+          {
+            app.features.map((f) => (
+              <div class="feat">
+                <h3>{f.title}</h3>
+                <p>{f.text}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section-sm">
+      <div class="container">
+        <div class="shead">
+          <h2>Para qué se usa</h2>
+        </div>
+        <ul class="cases">
+          {app.useCases.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container narrow">
+        <div class="shead">
+          <h2>Preguntas frecuentes</h2>
+        </div>
+        {
+          app.faq.map((f) => (
+            <details class="faq">
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section-sm">
+      <div class="container">
+        <div class="final">
+          <h2>Pruébalo, es público</h2>
+          <p>{app.description}</p>
+          <a
+            class="btn btn-primary btn-lg"
+            href={app.url}
+            target="_blank"
+            rel="noopener"
+            data-track="app_open"
+            data-app={app.slug}
+            data-place="ficha-final"
+          >
+            Abrir {app.name} ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {
+      others.length > 0 && (
+        <section class="section-sm">
+          <div class="container">
+            <div class="shead">
+              <h2>Otras apps del estudio</h2>
+            </div>
+            <div class="app-grid">
+              {others.map((o) => (
+                <AppCard app={o} place="ficha-relacionadas" />
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .head {
+    position: relative;
+    padding: 34px 0 20px;
+    overflow: hidden;
+  }
+  .head-glow {
+    position: absolute;
+    top: -260px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 460px;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  .head .container {
+    position: relative;
+  }
+
+  .crumb {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-bottom: 30px;
+  }
+  .crumb a:hover {
+    color: var(--text-2);
+  }
+  .crumb span[aria-hidden] {
+    margin: 0 4px;
+  }
+
+  .head-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .idrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .app-mark.big {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    font-size: 28px;
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  }
+  .badges {
+    display: flex;
+    gap: 7px;
+  }
+
+  h1 {
+    font-size: clamp(34px, 6vw, 54px);
+  }
+  .tagline {
+    font-size: clamp(17px, 2.4vw, 21px);
+    color: var(--text);
+    margin-top: 12px;
+    font-weight: 500;
+  }
+  .lead {
+    color: var(--text-2);
+    margin-top: 14px;
+    max-width: 56ch;
+  }
+
+  .cta {
+    display: flex;
+    gap: 11px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    margin-top: 32px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+  }
+  .meta dt {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+  }
+  .meta dd {
+    font-size: 14.5px;
+    color: var(--text-2);
+    margin-top: 4px;
+  }
+
+  /* Vista previa */
+  .preview img {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    width: 100%;
+    height: auto;
+  }
+  .preview-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--accent) 12%, var(--bg-soft)),
+      var(--bg-soft)
+    );
+    overflow: hidden;
+  }
+  .pv-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .pv-bar i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .pv-bar span {
+    margin-left: 8px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .pv-body {
+    padding: 34px 26px 30px;
+    text-align: center;
+  }
+  .pv-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    font-size: 24px;
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .pv-tag {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .pv-facts {
+    list-style: none;
+    display: flex;
+    gap: 7px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .pv-facts li {
+    font-size: 12px;
+    color: var(--text-2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 4px 9px;
+  }
+
+  /* Cuerpo */
+  .narrow {
+    max-width: 760px;
+  }
+  .h-sm {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    font-weight: 500;
+  }
+  .para {
+    font-size: clamp(17px, 2.3vw, 20px);
+    color: var(--text);
+    margin-top: 14px;
+    line-height: 1.55;
+  }
+
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .feat {
+    background: var(--bg);
+    padding: 26px 24px;
+  }
+  .feat h3 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .feat p {
+    color: var(--text-2);
+    font-size: 14.5px;
+    margin-top: 9px;
+  }
+
+  .cases {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .cases li {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    color: var(--text-2);
+    font-size: 15px;
+    background: var(--surface);
+  }
+  .cases li::before {
+    content: "→";
+    color: var(--text-3);
+    margin-right: 10px;
+  }
+
+  .faq {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 17px 0;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq summary::after {
+    content: "+";
+    color: var(--text-3);
+    font-size: 19px;
+    line-height: 1;
+  }
+  .faq[open] summary::after {
+    content: "−";
+  }
+  .faq p {
+    color: var(--text-2);
+    font-size: 15px;
+    padding-bottom: 18px;
+    max-width: 68ch;
+  }
+
+  .final {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--accent) 13%, transparent),
+      transparent 60%
+    );
+    padding: 44px 32px;
+    text-align: center;
+  }
+  .final h2 {
+    font-size: clamp(22px, 3.2vw, 30px);
+  }
+  .final p {
+    color: var(--text-2);
+    margin: 12px auto 24px;
+    max-width: 50ch;
+  }
+
+  @media (max-width: 900px) {
+    .head-grid {
+      grid-template-columns: 1fr;
+      gap: 34px;
+    }
+  }
+  @media (max-width: 720px) {
+    .cta .btn {
+      flex: 1;
+    }
+    .meta {
+      gap: 18px;
+    }
+  }
+</style>

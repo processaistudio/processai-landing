@@ -1,0 +1,230 @@
+---
+import Base from "../../layouts/Base.astro";
+import AppCard from "../../components/AppCard.astro";
+import { SITE } from "../../data/site";
+import { APPS, CATEGORIES } from "../../data/apps";
+
+/* La interfaz crece con el catálogo: con pocas apps no se enseñan
+   filtros ni buscador (se vería artificialmente vacío). */
+const showFilters = APPS.length >= 4 && CATEGORIES.length >= 3;
+const showSearch = APPS.length >= 6;
+
+const title = `Todas las apps de ${SITE.name}`;
+const description =
+  "Catálogo completo de aplicaciones creadas por ProcessAI Studio. Productos independientes, públicos y gratuitos para empezar.";
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    url: `${SITE.domain}/apps`,
+    description,
+    isPartOf: { "@id": `${SITE.domain}/#website` },
+    about: { "@id": `${SITE.domain}/#organization` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: `${SITE.domain}/` },
+      { "@type": "ListItem", position: 2, name: "Apps", item: `${SITE.domain}/apps` },
+    ],
+  },
+];
+---
+
+<Base title={`${title} | ProcessAI Studio`} description={description} path="/apps" schema={schema}>
+  <section class="section">
+    <div class="container">
+      <nav class="crumb" aria-label="Migas de pan">
+        <a href="/">Inicio</a> <span aria-hidden="true">/</span> <span>Apps</span>
+      </nav>
+
+      <div class="shead">
+        <h1>Todas nuestras apps</h1>
+        <p>
+          {APPS.length} productos publicados por ProcessAI Studio. Todos son públicos y puedes
+          probarlos ahora mismo.
+        </p>
+      </div>
+
+      {
+        (showFilters || showSearch) && (
+          <div class="tools">
+            {showFilters && (
+              <div class="filters" role="group" aria-label="Filtrar por categoría">
+                <button class="chip on" data-filter="all" type="button">
+                  Todas
+                </button>
+                {CATEGORIES.map((c) => (
+                  <button class="chip" data-filter={c} type="button">
+                    {c}
+                  </button>
+                ))}
+              </div>
+            )}
+            {showSearch && (
+              <input
+                id="q"
+                type="search"
+                class="search"
+                placeholder="Buscar apps…"
+                aria-label="Buscar apps"
+              />
+            )}
+          </div>
+        )
+      }
+
+      <div class="app-grid" id="grid">
+        {APPS.map((app) => <AppCard app={app} place="catalogo" />)}
+      </div>
+
+      <p class="empty" id="empty" hidden>No hay apps que coincidan con la búsqueda.</p>
+
+      <div class="soon">
+        <h2>Estamos construyendo más</h2>
+        <p>
+          Publicamos productos nuevos cuando están listos, no antes. Si quieres enterarte de los
+          próximos lanzamientos, escríbenos a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {
+    (showFilters || showSearch) && (
+      <script is:inline>
+        (function () {
+          var grid = document.getElementById("grid");
+          if (!grid) return;
+          var cards = Array.prototype.slice.call(grid.children);
+          var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
+          var q = document.getElementById("q");
+          var empty = document.getElementById("empty");
+          var active = "all";
+
+          function apply() {
+            var term = q && q.value ? q.value.toLowerCase().trim() : "";
+            var shown = 0;
+            cards.forEach(function (card) {
+              var cats = (card.getAttribute("data-categories") || "").split(",");
+              var text = card.textContent.toLowerCase();
+              var okCat = active === "all" || cats.indexOf(active) !== -1;
+              var okTerm = !term || text.indexOf(term) !== -1;
+              var show = okCat && okTerm;
+              card.style.display = show ? "" : "none";
+              if (show) shown++;
+            });
+            if (empty) empty.hidden = shown !== 0;
+          }
+
+          chips.forEach(function (chip) {
+            chip.addEventListener("click", function () {
+              chips.forEach(function (c) {
+                c.classList.remove("on");
+              });
+              chip.classList.add("on");
+              active = chip.getAttribute("data-filter");
+              apply();
+            });
+          });
+          if (q) q.addEventListener("input", apply);
+        })();
+      </script>
+    )
+  }
+</Base>
+
+<style>
+  .crumb {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-bottom: 22px;
+  }
+  .crumb a:hover {
+    color: var(--text-2);
+  }
+  .crumb span[aria-hidden] {
+    margin: 0 4px;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 44px);
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+  }
+  .filters {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--text-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all var(--t);
+  }
+  .chip:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .chip.on {
+    background: #fff;
+    color: #08090c;
+    border-color: #fff;
+  }
+  .search {
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 220px;
+    outline: none;
+  }
+  .search:focus {
+    border-color: var(--border-strong);
+  }
+
+  .empty {
+    color: var(--text-3);
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  .soon {
+    margin-top: 56px;
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+  }
+  .soon h2 {
+    font-size: 19px;
+  }
+  .soon p {
+    color: var(--text-2);
+    margin-top: 8px;
+    max-width: 58ch;
+    font-size: 15px;
+  }
+  .soon a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+import { SITE, NAV } from "../data/site";
+import { LATEST_APPS } from "../data/apps";
+
+const latest = LATEST_APPS[0];
+const here = Astro.url.pathname.replace(/\/+$/, "") || "/";
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href="/" aria-label={`${SITE.name} — inicio`}>
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">ProcessAI <span>Studio</span></span>
+    </a>
+
+    <nav class="nav" aria-label="Principal">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            class:list={["nav-link", { on: here === item.href || here.startsWith(item.href + "/") }]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      {
+        latest && (
+          <a class="latest" href={`/apps/${latest.slug}`}>
+            <span class="pulse" aria-hidden="true" />
+            Último lanzamiento: {latest.name}
+          </a>
+        )
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(8, 9, 12, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    height: 62px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+  .brand-mark {
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: linear-gradient(145deg, #fff, #9a9db0);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .brand-name span {
+    color: var(--text-3);
+    font-weight: 500;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-link {
+    font-size: 14.5px;
+    color: var(--text-2);
+    padding: 7px 12px;
+    border-radius: 9px;
+    transition: color var(--t), background var(--t);
+  }
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  .nav-link.on {
+    color: var(--text);
+  }
+
+  .latest {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 6px;
+    font-size: 13px;
+    color: var(--text-2);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 7px 13px;
+    border-radius: 999px;
+    transition: border-color var(--t), color var(--t);
+  }
+  .latest:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2fd38a;
+    box-shadow: 0 0 0 3px rgba(47, 211, 138, 0.16);
+  }
+
+  @media (max-width: 720px) {
+    .latest {
+      display: none;
+    }
+    .brand-name span {
+      display: none;
+    }
+    .nav-link {
+      padding: 7px 10px;
+    }
+  }
+</style>

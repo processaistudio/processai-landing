@@ -1,0 +1,297 @@
+---
+import Base from "../layouts/Base.astro";
+import AppCard from "../components/AppCard.astro";
+import { SITE, COPY } from "../data/site";
+import { APPS, LATEST_APPS, STATUS_LABEL } from "../data/apps";
+
+/* "Últimos lanzamientos" solo aparece cuando hay catálogo suficiente:
+   con 2 apps repetiría la parrilla de arriba. Se activa solo al crecer. */
+const showLatest = APPS.length > 3;
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${SITE.domain}/#organization`,
+    name: SITE.name,
+    url: `${SITE.domain}/`,
+    email: SITE.email,
+    description: SITE.defaultDescription,
+    logo: `${SITE.domain}/favicon.svg`,
+    foundingLocation: { "@type": "Place", name: "España" },
+    sameAs: APPS.map((a) => a.url),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE.domain}/#website`,
+    url: `${SITE.domain}/`,
+    name: SITE.name,
+    inLanguage: "es-ES",
+    publisher: { "@id": `${SITE.domain}/#organization` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Apps de ProcessAI Studio",
+    numberOfItems: APPS.length,
+    itemListElement: APPS.map((app, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "SoftwareApplication",
+        name: app.name,
+        url: `${SITE.domain}/apps/${app.slug}`,
+        description: app.description,
+        applicationCategory: "WebApplication",
+        operatingSystem: "Web",
+        publisher: { "@id": `${SITE.domain}/#organization` },
+      },
+    })),
+  },
+];
+---
+
+<Base
+  title={SITE.defaultTitle}
+  description={SITE.defaultDescription}
+  path="/"
+  schema={schema}
+>
+  <section class="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container hero-in">
+      <span class="eyebrow rise"><span class="dot"></span>{COPY.hero.eyebrow}</span>
+      <h1 class="rise" style="animation-delay:60ms">
+        {COPY.hero.title}<br /><span class="accent">{COPY.hero.titleAccent}</span>
+      </h1>
+      <p class="sub rise" style="animation-delay:120ms">{COPY.hero.subtitle}</p>
+      <div class="cta rise" style="animation-delay:180ms">
+        <a class="btn btn-primary btn-lg" href="#apps">{COPY.hero.cta} ↓</a>
+        <a class="btn btn-lg" href="/about">{COPY.hero.ctaSecondary}</a>
+      </div>
+      <p class="count rise" style="animation-delay:240ms">
+        {APPS.length} apps publicadas · todas gratuitas para empezar
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="apps">
+    <div class="container">
+      <div class="shead shead-row">
+        <div>
+          <h2>{COPY.apps.title}</h2>
+          <p>{COPY.apps.subtitle}</p>
+        </div>
+        <a class="btn" href="/apps">{COPY.apps.all} →</a>
+      </div>
+
+      <div class="app-grid">
+        {APPS.map((app) => <AppCard app={app} place="home" />)}
+      </div>
+    </div>
+  </section>
+
+  {
+    showLatest && (
+      <section class="section-sm">
+        <div class="container">
+          <div class="shead">
+            <h2>{COPY.latest.title}</h2>
+            <p>{COPY.latest.subtitle}</p>
+          </div>
+          <ul class="launches">
+            {LATEST_APPS.slice(0, 4).map((app) => (
+              <li>
+                <a href={`/apps/${app.slug}`}>
+                  <span class="lmark" style={`--accent:${app.accent}`}>{app.mark}</span>
+                  <span class="lname">{app.name}</span>
+                  <span class="ldesc">{app.tagline}</span>
+                  <span class={`badge badge-${app.status}`}>{STATUS_LABEL[app.status]}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="about-box">
+        <div>
+          <h2>{COPY.about.lead}</h2>
+          <p>{COPY.about.body}</p>
+          <a class="btn" href="/about">Conocer el estudio →</a>
+        </div>
+        <ol class="loop" aria-label="Cómo trabajamos">
+          {COPY.about.loop.map((step, i) => (
+            <li>
+              <span class="n">{String(i + 1).padStart(2, "0")}</span>
+              {step}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    padding: 96px 0 64px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    top: -220px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 760px;
+    height: 460px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.075),
+      transparent 68%
+    );
+    pointer-events: none;
+  }
+  .hero-in {
+    position: relative;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 7.2vw, 68px);
+    margin-top: 22px;
+    font-weight: 600;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(100deg, #ffffff 10%, #8f93a6 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .sub {
+    color: var(--text-2);
+    font-size: clamp(16px, 2.2vw, 19px);
+    max-width: 54ch;
+    margin: 20px auto 0;
+  }
+  .hero .cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+  .hero .count {
+    margin-top: 22px;
+    font-size: 13.5px;
+    color: var(--text-3);
+  }
+
+  .launches {
+    list-style: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .launches li + li {
+    border-top: 1px solid var(--border);
+  }
+  .launches a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 18px;
+    transition: background var(--t);
+  }
+  .launches a:hover {
+    background: var(--surface);
+  }
+  .lmark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+  .lname {
+    font-weight: 500;
+  }
+  .ldesc {
+    color: var(--text-3);
+    font-size: 14px;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .about-box {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 40px;
+    align-items: center;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+  }
+  .about-box h2 {
+    font-size: clamp(22px, 3vw, 28px);
+  }
+  .about-box p {
+    color: var(--text-2);
+    margin: 14px 0 22px;
+    max-width: 52ch;
+  }
+
+  .loop {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .loop li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: var(--text-2);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .loop li:last-child {
+    border-bottom: 0;
+  }
+  .loop .n {
+    font-size: 12px;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 860px) {
+    .about-box {
+      grid-template-columns: 1fr;
+      padding: 28px;
+      gap: 28px;
+    }
+  }
+  @media (max-width: 720px) {
+    .hero {
+      padding: 64px 0 44px;
+    }
+    .ldesc {
+      display: none;
+    }
+    .hero .cta .btn {
+      flex: 1;
+    }
+  }
+</style>

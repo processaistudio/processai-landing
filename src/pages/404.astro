@@ -1,0 +1,51 @@
+---
+import Base from "../layouts/Base.astro";
+import AppCard from "../components/AppCard.astro";
+import { APPS } from "../data/apps";
+---
+
+<Base
+  title="Página no encontrada | ProcessAI Studio"
+  description="Esta página no existe. Descubre las apps creadas por ProcessAI Studio."
+  path="/404"
+  noindex={true}
+>
+  <section class="section">
+    <div class="container">
+      <div class="box">
+        <span class="code">404</span>
+        <h1>Aquí no hay nada</h1>
+        <p>
+          Puede que esta página ya no exista. ProcessAI Studio ahora es un estudio de producto: esto
+          es lo que hemos publicado.
+        </p>
+        <a class="btn btn-primary" href="/">Ir al inicio</a>
+      </div>
+
+      <div class="app-grid" style="margin-top:44px">
+        {APPS.map((app) => <AppCard app={app} place="404" />)}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .box {
+    text-align: center;
+    padding: 30px 0 10px;
+  }
+  .code {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 44px);
+    margin-top: 12px;
+  }
+  .box p {
+    color: var(--text-2);
+    max-width: 48ch;
+    margin: 14px auto 24px;
+  }
+</style>
