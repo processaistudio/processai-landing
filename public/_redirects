@@ -1,5 +1,8 @@
-# ProcessAI Studio dejo de ser agencia (2026). Las paginas de
-# servicios/blog se retiran con 301 para no dejar 404s y no
+# Google guardo la URL del sitemap antiguo: la llevamos al nuevo
+/sitemap.xml   /sitemap-index.xml   301
+
+# ProcessAI Studio cambio de modelo en 2026. Las paginas del
+# sitio anterior se retiran con 301 para no dejar 404s y no
 # perder la autoridad del dominio.
 
 /servicios                         /  301

@@ -11,9 +11,12 @@ export const SITE = {
   email: "studiosprocessai@gmail.com",
   founders: "Erik Camps y Marçal Ustrell",
   /** Aparece en <title> cuando no hay uno propio. */
-  defaultTitle: "ProcessAI Studio — Creamos apps que la gente usa de verdad",
+  defaultTitle: "ProcessAI Studio — Digital product studio independiente",
+  /** 150-160 caracteres: lo que Google enseña bajo el título. */
   defaultDescription:
-    "Somos un product studio independiente. Creamos, lanzamos y hacemos crecer nuestras propias aplicaciones de internet. Descubre las apps que hemos construido.",
+    "Digital product studio independiente. Creamos, lanzamos y operamos nuestras propias aplicaciones con tecnología e IA: ChatFlash, CIMS Club y las que vienen.",
+  /** Frase de una línea para schema.org y usos internos. */
+  shortPitch: "Creamos y operamos nuestras propias aplicaciones digitales.",
   ogImage: "/og.png",
 } as const;
 

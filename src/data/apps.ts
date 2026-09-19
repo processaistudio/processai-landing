@@ -149,9 +149,9 @@ export const APPS: App[] = [
     status: "live",
     featured: true,
     isNew: true,
-    seoTitle: "ChatFlash — Analiza tu chat de WhatsApp y descubre sus estadísticas",
+    seoTitle: "ChatFlash — Analiza tu chat de WhatsApp",
     seoDescription:
-      "Importa un chat exportado de WhatsApp y obtén tu Wrapped: quién lleva la iniciativa, tiempos de respuesta, horas punta y los premios del chat. El análisis ocurre en tu dispositivo.",
+      "Importa un chat de WhatsApp y obtén tu Wrapped: quién lleva la iniciativa, tiempos de respuesta, horas punta y los premios. Todo en tu dispositivo.",
   },
   {
     name: "CIMS Club",
@@ -232,9 +232,9 @@ export const APPS: App[] = [
     status: "live",
     featured: true,
     isNew: true,
-    seoTitle: "CIMS Club — Tu palmarés de cimas a partir de tu historial de Strava",
+    seoTitle: "CIMS Club — Tu palmarés de cimas con Strava",
     seoDescription:
-      "Conecta Strava y descubre cuántas cimas has coronado: palmarés completo, repeticiones, listas de 3.000 y mapa. Cruzamos tus tracks GPS con más de 600.000 cimas de OpenStreetMap.",
+      "Conecta Strava y descubre cuántas cimas has coronado: palmarés, repeticiones, listas de 3.000 y mapa, cruzando tus tracks con 600.000 cimas.",
   },
 
   /* ──────────────────────────────────────────────────────────────

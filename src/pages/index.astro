@@ -14,11 +14,33 @@ const schema = [
     "@type": "Organization",
     "@id": `${SITE.domain}/#organization`,
     name: SITE.name,
+    alternateName: "ProcessAI",
     url: `${SITE.domain}/`,
     email: SITE.email,
     description: SITE.defaultDescription,
-    logo: `${SITE.domain}/favicon.svg`,
+    slogan: SITE.shortPitch,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE.domain}/icon-512.png`,
+      width: 512,
+      height: 512,
+    },
+    image: `${SITE.domain}/og.png`,
     foundingLocation: { "@type": "Place", name: "España" },
+    knowsAbout: [
+      "Desarrollo de producto digital",
+      "Aplicaciones web",
+      "Inteligencia artificial aplicada",
+    ],
+    /* Relación explícita marca -> productos: le dice a Google que estas
+       aplicaciones son nuestras, no de terceros. */
+    owns: APPS.map((a) => ({
+      "@type": "SoftwareApplication",
+      name: a.name,
+      url: `${SITE.domain}/apps/${a.slug}`,
+      sameAs: a.url,
+      applicationCategory: "WebApplication",
+    })),
     sameAs: APPS.map((a) => a.url),
   },
   {

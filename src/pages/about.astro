@@ -3,9 +3,9 @@ import Base from "../layouts/Base.astro";
 import { SITE, COPY } from "../data/site";
 import { APPS } from "../data/apps";
 
-const title = "Sobre ProcessAI Studio — product studio independiente";
+const title = "Sobre ProcessAI Studio — cómo trabajamos";
 const description =
-  "ProcessAI Studio es un estudio de producto independiente que crea, lanza y hace crecer sus propias aplicaciones de internet. Así trabajamos.";
+  "ProcessAI Studio es un digital product studio independiente: creamos, lanzamos y operamos nuestras propias aplicaciones. Así construimos cada producto.";
 
 const schema = [
   {
@@ -27,7 +27,7 @@ const schema = [
 ];
 ---
 
-<Base title={`${title} | ProcessAI Studio`} description={description} path="/about" schema={schema}>
+<Base title={title} description={description} path="/about" schema={schema}>
   <section class="section">
     <div class="container narrow">
       <nav class="crumb" aria-label="Migas de pan">

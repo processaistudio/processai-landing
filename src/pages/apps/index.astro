@@ -9,9 +9,9 @@ import { APPS, CATEGORIES } from "../../data/apps";
 const showFilters = APPS.length >= 4 && CATEGORIES.length >= 3;
 const showSearch = APPS.length >= 6;
 
-const title = `Todas las apps de ${SITE.name}`;
+const title = "Apps de ProcessAI Studio — catálogo de productos";
 const description =
-  "Catálogo completo de aplicaciones creadas por ProcessAI Studio. Productos independientes, públicos y gratuitos para empezar.";
+  "Todas las aplicaciones creadas por ProcessAI Studio: ChatFlash, CIMS Club y los próximos lanzamientos. Productos propios, públicos y gratuitos para empezar.";
 
 const schema = [
   {
@@ -34,7 +34,7 @@ const schema = [
 ];
 ---
 
-<Base title={`${title} | ProcessAI Studio`} description={description} path="/apps" schema={schema}>
+<Base title={title} description={description} path="/apps" schema={schema}>
   <section class="section">
     <div class="container">
       <nav class="crumb" aria-label="Migas de pan">
